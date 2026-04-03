@@ -77,6 +77,13 @@
   animation: gradient-shift 6s ease-in-out infinite;
 }
 
+.hero__title-cursor {
+  color: var(--color-primary);
+  font-weight: 300;
+  animation: blink 1s step-end infinite;
+  margin-left: 2px;
+}
+
 @keyframes gradient-shift {
   0%, 100% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }

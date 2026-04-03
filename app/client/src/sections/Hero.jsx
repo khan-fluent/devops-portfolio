@@ -2,6 +2,19 @@ import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import '../styles/Hero.css';
 
+const ROTATING_WORDS = [
+  'Scaling',
+  'Automating',
+  'Deploying',
+  'Securing',
+  'Optimizing',
+  'Monitoring',
+  'Orchestrating',
+  'Networking',
+  'Developing',
+  'Architecting',
+];
+
 const COMMANDS = [
   'terraform apply',
   'kubectl deploy',
@@ -12,45 +25,81 @@ const COMMANDS = [
 
 const STATS = [
   { value: '99.9%', label: 'Uptime' },
-  { value: '500+', label: 'Deployments' },
+  { value: '1000+', label: 'Projects' },
   { value: '< 5min', label: 'MTTR' },
 ];
 
 export default function Hero() {
-  const [displayText, setDisplayText] = useState('');
-  const commandIndex = useRef(0);
-  const charIndex = useRef(0);
-  const deleting = useRef(false);
+  const [word, setWord] = useState('');
+  const [cmdText, setCmdText] = useState('');
+  const wordIdx = useRef(0);
+  const wordCharIdx = useRef(0);
+  const wordDeleting = useRef(false);
+  const cmdIdx = useRef(0);
+  const cmdCharIdx = useRef(0);
+  const cmdDeleting = useRef(false);
   const contentRef = useRef(null);
 
+  // Rotating headline word
   useEffect(() => {
     const type = () => {
-      const currentCmd = COMMANDS[commandIndex.current];
+      const current = ROTATING_WORDS[wordIdx.current];
 
-      if (!deleting.current) {
-        charIndex.current++;
-        setDisplayText(currentCmd.slice(0, charIndex.current));
+      if (!wordDeleting.current) {
+        wordCharIdx.current++;
+        setWord(current.slice(0, wordCharIdx.current));
 
-        if (charIndex.current === currentCmd.length) {
-          deleting.current = true;
+        if (wordCharIdx.current === current.length) {
+          wordDeleting.current = true;
+          return setTimeout(type, 2200);
+        }
+        return setTimeout(type, 70);
+      } else {
+        wordCharIdx.current--;
+        setWord(current.slice(0, wordCharIdx.current));
+
+        if (wordCharIdx.current === 0) {
+          wordDeleting.current = false;
+          wordIdx.current = (wordIdx.current + 1) % ROTATING_WORDS.length;
+          return setTimeout(type, 300);
+        }
+        return setTimeout(type, 35);
+      }
+    };
+
+    const id = setTimeout(type, 800);
+    return () => clearTimeout(id);
+  }, []);
+
+  // Terminal command typing
+  useEffect(() => {
+    const type = () => {
+      const current = COMMANDS[cmdIdx.current];
+
+      if (!cmdDeleting.current) {
+        cmdCharIdx.current++;
+        setCmdText(current.slice(0, cmdCharIdx.current));
+
+        if (cmdCharIdx.current === current.length) {
+          cmdDeleting.current = true;
           return setTimeout(type, 2000);
         }
         return setTimeout(type, 80);
       } else {
-        charIndex.current--;
-        setDisplayText(currentCmd.slice(0, charIndex.current));
+        cmdCharIdx.current--;
+        setCmdText(current.slice(0, cmdCharIdx.current));
 
-        if (charIndex.current === 0) {
-          deleting.current = false;
-          commandIndex.current = (commandIndex.current + 1) % COMMANDS.length;
+        if (cmdCharIdx.current === 0) {
+          cmdDeleting.current = false;
+          cmdIdx.current = (cmdIdx.current + 1) % COMMANDS.length;
           return setTimeout(type, 400);
         }
         return setTimeout(type, 40);
       }
     };
 
-    const timeoutId = setTimeout(type, 1000);
-    return () => clearTimeout(timeoutId);
+    const id = setTimeout(type, 1500);
+    return () => clearTimeout(id);
   }, []);
 
   useEffect(() => {
@@ -85,19 +134,21 @@ export default function Hero() {
       <div className="hero__glow" />
 
       <div className="hero__content" ref={contentRef}>
-        <span className="hero__label">SRE &amp; DevOps Engineer</span>
+        <span className="hero__label">Engineering as a Service</span>
 
         <h1 className="hero__title">
-          <span className="hero__title-gradient">DevOps Engineer</span>
+          Need help{' '}
+          <span className="hero__title-gradient">{word}</span>
+          <span className="hero__title-cursor">|</span>
         </h1>
 
         <p className="hero__subtitle">
-          Building resilient infrastructure at scale
+          Full-stack engineering, DevOps, and SRE — from architecture to production.
         </p>
 
         <div className="hero__terminal">
           <span className="hero__terminal-prompt">$</span>
-          <span className="hero__terminal-text">{displayText}</span>
+          <span className="hero__terminal-text">{cmdText}</span>
           <span className="hero__terminal-cursor" />
         </div>
 
