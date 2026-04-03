@@ -62,4 +62,35 @@ module "ecs" {
   db_name       = var.db_name
   db_username   = var.db_username
   db_secret_arn = module.rds.master_user_secret_arn
+
+  contact_email = var.contact_email
+}
+
+module "ses" {
+  source = "../../modules/ses"
+
+  email = var.contact_email
+}
+
+module "monitoring" {
+  source = "../../modules/monitoring"
+
+  alert_email            = var.contact_email
+  ecs_cluster_name       = module.ecs.cluster_name
+  ecs_service_name       = module.ecs.service_name
+  rds_instance_id        = "devops-portfolio"
+  autoscaling_group_name = module.ecs.autoscaling_group_name
+  ec2_instance_id        = data.aws_instances.ecs.ids[0]
+}
+
+data "aws_instances" "ecs" {
+  filter {
+    name   = "tag:Name"
+    values = ["devops-portfolio-ecs-instance"]
+  }
+
+  filter {
+    name   = "instance-state-name"
+    values = ["running"]
+  }
 }

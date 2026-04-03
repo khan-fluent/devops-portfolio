@@ -53,3 +53,8 @@ variable "db_secret_arn" {
   description = "ARN of the Secrets Manager secret containing the master password"
   type        = string
 }
+
+variable "contact_email" {
+  description = "Email address for contact form notifications"
+  type        = string
+}

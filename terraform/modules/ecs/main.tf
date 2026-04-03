@@ -94,6 +94,22 @@ resource "aws_iam_role" "task" {
   assume_role_policy = data.aws_iam_policy_document.ecs_task_assume.json
 }
 
+resource "aws_iam_role_policy" "task_ses" {
+  name = "${var.cluster_name}-task-ses"
+  role = aws_iam_role.task.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = ["ses:SendEmail", "ses:SendRawEmail"]
+        Resource = "*"
+      }
+    ]
+  })
+}
+
 # ---------- Launch template ----------
 
 resource "aws_launch_template" "ecs" {
@@ -184,6 +200,8 @@ resource "aws_ecs_task_definition" "this" {
         { name = "DB_PORT", value = var.db_port },
         { name = "DB_NAME", value = var.db_name },
         { name = "DB_USERNAME", value = var.db_username },
+        { name = "CONTACT_EMAIL", value = var.contact_email },
+        { name = "AWS_SES_REGION", value = "us-east-1" },
       ]
 
       secrets = [
@@ -216,6 +234,11 @@ resource "aws_ecs_service" "this" {
 
   deployment_minimum_healthy_percent = 0
   deployment_maximum_percent         = 100
+
+  deployment_circuit_breaker {
+    enable   = true
+    rollback = true
+  }
 
   depends_on = [aws_autoscaling_group.ecs]
 }

@@ -22,3 +22,8 @@ output "log_group_name" {
   description = "CloudWatch log group name"
   value       = aws_cloudwatch_log_group.this.name
 }
+
+output "autoscaling_group_name" {
+  description = "Name of the Auto Scaling Group"
+  value       = aws_autoscaling_group.ecs.name
+}

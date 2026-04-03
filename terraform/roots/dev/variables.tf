@@ -27,3 +27,9 @@ variable "db_username" {
   type        = string
   default     = "dbadmin"
 }
+
+variable "contact_email" {
+  description = "Email address for contact form and alert notifications"
+  type        = string
+  default     = "khanfluent@outlook.com"
+}
