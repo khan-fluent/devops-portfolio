@@ -102,5 +102,30 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
+      - name: Record apply start time
+        id: timer
+        run: echo "start=$(date +%s%3N)" >> $GITHUB_OUTPUT
+
       - name: Terraform Apply
+        id: apply
         run: terraform apply -auto-approve
+
+      - name: Get app public IP
+        if: always()
+        id: ip
+        run: |
+          IP=$(aws ec2 describe-instances \
+            --filters "Name=tag:Name,Values=devops-portfolio-ecs-instance" "Name=instance-state-name,Values=running" \
+            --query 'Reservations[0].Instances[0].PublicIpAddress' --output text)
+          echo "ip=$IP" >> $GITHUB_OUTPUT
+
+      - name: Record infra deployment to API
+        if: always()
+        run: |
+          END=$(date +%s%3N)
+          DURATION=$(( END - ${{ steps.timer.outputs.start }} ))
+          STATUS=${{ steps.apply.outcome == 'success' && 'success' || 'failure' }}
+          curl -s -X POST "http://${{ steps.ip.outputs.ip }}:3000/api/deployments" \
+            -H "Content-Type: application/json" \
+            -d "{\"commit_sha\": \"${{ github.sha }}\", \"branch\": \"terraform/${{ github.ref_name }}\", \"status\": \"$STATUS\", \"duration_ms\": $DURATION}" \
+            || echo "Failed to record deployment"
