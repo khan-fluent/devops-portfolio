@@ -59,7 +59,7 @@ export default function Navbar() {
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }}
         >
-          FAISAL<span>.DEV</span>
+          KHAN<span>FLUENT</span>
         </a>
 
         <button

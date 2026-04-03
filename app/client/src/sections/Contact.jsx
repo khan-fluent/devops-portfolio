@@ -122,7 +122,7 @@ export default function Contact() {
             </div>
 
             <div className="contact__direct-links">
-              <a href="mailto:hello@faisal.dev" className="contact__direct-link">
+              <a href="mailto:khanfluent@outlook.com" className="contact__direct-link">
                 <div className="contact__direct-link-icon">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
@@ -131,12 +131,12 @@ export default function Contact() {
                 </div>
                 <div className="contact__direct-link-info">
                   <span className="contact__direct-link-label">Email</span>
-                  <span className="contact__direct-link-value">hello@faisal.dev</span>
+                  <span className="contact__direct-link-value">khanfluent@outlook.com</span>
                 </div>
               </a>
 
               <a
-                href="https://linkedin.com"
+                href="https://www.linkedin.com/in/faisal-khan-789a05400/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="contact__direct-link"
@@ -148,12 +148,12 @@ export default function Contact() {
                 </div>
                 <div className="contact__direct-link-info">
                   <span className="contact__direct-link-label">LinkedIn</span>
-                  <span className="contact__direct-link-value">linkedin.com/in/faisal</span>
+                  <span className="contact__direct-link-value">linkedin.com/in/faisal-khan</span>
                 </div>
               </a>
 
               <a
-                href="https://github.com"
+                href="https://github.com/khan-fluent"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="contact__direct-link"
@@ -165,7 +165,7 @@ export default function Contact() {
                 </div>
                 <div className="contact__direct-link-info">
                   <span className="contact__direct-link-label">GitHub</span>
-                  <span className="contact__direct-link-value">github.com/faisal</span>
+                  <span className="contact__direct-link-value">github.com/khan-fluent</span>
                 </div>
               </a>
             </div>

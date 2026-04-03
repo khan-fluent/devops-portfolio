@@ -7,7 +7,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 const WELCOME_LINES = [
   { text: '', type: 'output' },
-  { text: '  Welcome to Faisal\'s DevOps Portfolio Terminal', type: 'cyan' },
+  { text: '  Welcome to Faisal Khan Afridi\'s DevOps Portfolio Terminal', type: 'cyan' },
   { text: '  Type "help" to see available commands.', type: 'output' },
   { text: '', type: 'output' },
 ];
@@ -33,7 +33,7 @@ const HELP_OUTPUT = [
 
 const ABOUT_OUTPUT = [
   { text: '', type: 'output' },
-  { text: '  Faisal — DevOps & Site Reliability Engineer', type: 'cyan' },
+  { text: '  Faisal Khan Afridi — DevOps & Site Reliability Engineer', type: 'cyan' },
   { text: '', type: 'output' },
   { text: '  Passionate about building resilient, scalable infrastructure.', type: 'output' },
   { text: '  5+ years of experience in cloud platforms, container orchestration,', type: 'output' },
@@ -105,9 +105,9 @@ const CONTACT_OUTPUT = [
   { text: '', type: 'output' },
   { text: '  Contact Information:', type: 'bold' },
   { text: '', type: 'output' },
-  { text: '  Email     hello@faisal.dev', type: 'output' },
-  { text: '  GitHub    github.com/faisal', type: 'output' },
-  { text: '  LinkedIn  linkedin.com/in/faisal', type: 'output' },
+  { text: '  Email     khanfluent@outlook.com', type: 'output' },
+  { text: '  GitHub    github.com/khan-fluent', type: 'output' },
+  { text: '  LinkedIn  linkedin.com/in/faisal-khan-789a05400', type: 'output' },
   { text: '', type: 'output' },
 ];
 

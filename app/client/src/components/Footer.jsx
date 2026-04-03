@@ -7,12 +7,12 @@ export default function Footer() {
     <footer className="footer">
       <div className="container footer__inner">
         <p className="footer__copyright">
-          &copy; {year} <span>FAISAL.DEV</span> — Built with passion for reliability.
+          &copy; {year} <span>khanfluent.digital</span> — Built with passion for reliability.
         </p>
 
         <div className="footer__socials">
           <a
-            href="https://github.com"
+            href="https://github.com/khan-fluent"
             target="_blank"
             rel="noopener noreferrer"
             className="footer__social-link"
@@ -24,7 +24,7 @@ export default function Footer() {
           </a>
 
           <a
-            href="https://linkedin.com"
+            href="https://www.linkedin.com/in/faisal-khan-789a05400/"
             target="_blank"
             rel="noopener noreferrer"
             className="footer__social-link"
@@ -35,7 +35,7 @@ export default function Footer() {
             LinkedIn
           </a>
 
-          <a href="mailto:hello@faisal.dev" className="footer__social-link">
+          <a href="mailto:khanfluent@outlook.com" className="footer__social-link">
             <svg viewBox="0 0 24 24" fill="currentColor">
               <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
             </svg>
