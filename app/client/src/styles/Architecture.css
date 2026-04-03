@@ -1,0 +1,143 @@
+/* ========================================
+   Architecture Section
+   ======================================== */
+.architecture {
+  padding: var(--space-4xl) 0;
+}
+
+.architecture__header {
+  margin-bottom: var(--space-3xl);
+}
+
+.architecture__diagram {
+  position: relative;
+  max-width: 950px;
+  margin: 0 auto;
+  overflow-x: auto;
+  padding: var(--space-xl) 0;
+}
+
+.architecture__svg {
+  width: 100%;
+  min-width: 700px;
+  height: auto;
+}
+
+/* Node boxes */
+.architecture__node {
+  transition: filter var(--transition-base);
+}
+
+.architecture__node-box {
+  fill: var(--color-surface);
+  stroke: var(--color-border);
+  stroke-width: 1.5;
+  rx: 8;
+  ry: 8;
+  transition: stroke var(--transition-base), filter var(--transition-base);
+}
+
+.architecture__node:hover .architecture__node-box {
+  stroke: var(--color-primary);
+  filter: drop-shadow(0 0 12px rgba(0, 240, 255, 0.3));
+}
+
+.architecture__node-label {
+  fill: var(--color-text);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+
+.architecture__node-sublabel {
+  fill: var(--color-text-secondary);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+
+.architecture__node-icon {
+  fill: var(--color-primary);
+  font-size: 22px;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+
+/* Connection lines */
+.architecture__connection {
+  stroke: var(--color-border);
+  stroke-width: 2;
+  fill: none;
+  stroke-dasharray: 8, 4;
+}
+
+/* Animated flowing dots */
+.architecture__flow-dot {
+  fill: var(--color-primary);
+  r: 3;
+}
+
+.architecture__flow-dot--alt {
+  fill: var(--color-secondary);
+}
+
+@keyframes flow-right {
+  0% { opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* Arrow heads */
+.architecture__arrow {
+  fill: var(--color-primary);
+}
+
+/* Legend */
+.architecture__legend {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-xl);
+  margin-top: var(--space-2xl);
+  flex-wrap: wrap;
+}
+
+.architecture__legend-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+}
+
+.architecture__legend-line {
+  width: 30px;
+  height: 2px;
+  background: var(--color-border);
+  position: relative;
+}
+
+.architecture__legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.architecture__legend-dot--primary {
+  background: var(--color-primary);
+  box-shadow: 0 0 6px var(--color-primary);
+}
+
+.architecture__legend-dot--secondary {
+  background: var(--color-secondary);
+  box-shadow: 0 0 6px var(--color-secondary);
+}
+
+@media (max-width: 768px) {
+  .architecture__diagram {
+    padding: var(--space-md);
+  }
+}

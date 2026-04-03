@@ -1,0 +1,5 @@
+aws_region          = "us-east-1"
+ecr_repository_name = "devops-portfolio"
+ecs_cluster_name    = "devops-portfolio"
+db_name             = "devops_portfolio"
+db_username         = "dbadmin"

@@ -1,0 +1,39 @@
+# Terraform
+terraform/.terraform/
+terraform/*.tfstate
+terraform/*.tfstate.backup
+terraform/*.tfvars
+terraform/.terraform.lock.hcl
+
+# Node
+node_modules/
+app/client/dist/
+app/server/dist/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# AWS
+*.pem
+credentials
+.aws/
+
+# Docker
+.docker/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+terraform/tfplan
+*.tfplan
