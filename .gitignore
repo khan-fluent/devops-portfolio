@@ -37,3 +37,4 @@ Thumbs.db
 *.log
 terraform/tfplan
 *.tfplan
+terraform/roots/dev/.terraform/

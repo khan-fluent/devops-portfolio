@@ -10,7 +10,7 @@ terraform {
 
   backend "s3" {
     bucket       = "devops-portfolio-tfstate-282353614364"
-    key          = "terraform.tfstate"
+    key          = "dev/terraform.tfstate"
     region       = "us-east-1"
     use_lockfile = true
   }
@@ -27,17 +27,17 @@ provider "aws" {
 }
 
 module "networking" {
-  source = "./modules/networking"
+  source = "../../modules/networking"
 }
 
 module "ecr" {
-  source = "./modules/ecr"
+  source = "../../modules/ecr"
 
   repository_name = var.ecr_repository_name
 }
 
 module "rds" {
-  source = "./modules/rds"
+  source = "../../modules/rds"
 
   db_name    = var.db_name
   db_username = var.db_username
@@ -47,7 +47,7 @@ module "rds" {
 }
 
 module "ecs" {
-  source = "./modules/ecs"
+  source = "../../modules/ecs"
 
   cluster_name       = var.ecs_cluster_name
   ecr_repository_url = module.ecr.repository_url
