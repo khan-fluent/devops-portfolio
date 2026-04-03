@@ -19,7 +19,6 @@ const HELP_OUTPUT = [
   { text: '  about          Show bio and background', type: 'output' },
   { text: '  skills         List technical skills', type: 'output' },
   { text: '  experience     Show work history', type: 'output' },
-  { text: '  certifications List certifications', type: 'output' },
   { text: '  projects       List featured projects', type: 'output' },
   { text: '  contact        Show contact information', type: 'output' },
   { text: '  uptime         Fetch system uptime', type: 'output' },
@@ -33,12 +32,12 @@ const HELP_OUTPUT = [
 
 const ABOUT_OUTPUT = [
   { text: '', type: 'output' },
-  { text: '  Faisal Khan Afridi — DevOps & Site Reliability Engineer', type: 'cyan' },
+  { text: '  Faisal Khan Afridi — CEO & Engineering Generalist', type: 'cyan' },
   { text: '', type: 'output' },
-  { text: '  Passionate about building resilient, scalable infrastructure.', type: 'output' },
-  { text: '  5+ years of experience in cloud platforms, container orchestration,', type: 'output' },
-  { text: '  CI/CD automation, and observability. I treat infrastructure as code', type: 'output' },
-  { text: '  and reliability as a feature.', type: 'output' },
+  { text: '  10+ years architecting across the full stack and SDLC.', type: 'output' },
+  { text: '  Deep specialization in DevOps and Site Reliability Engineering.', type: 'output' },
+  { text: '  Automation at every layer. Reliability as a first-class feature.', type: 'output' },
+  { text: '  1000+ projects delivered across frontend, backend, cloud, and infra.', type: 'output' },
   { text: '', type: 'output' },
 ];
 
@@ -46,11 +45,12 @@ const SKILLS_OUTPUT = [
   { text: '', type: 'output' },
   { text: '  Technical Skills:', type: 'bold' },
   { text: '', type: 'output' },
-  { text: '  [01] Infrastructure as Code   Terraform, CloudFormation, Pulumi', type: 'success' },
-  { text: '  [02] CI/CD & Automation        GitHub Actions, Jenkins, ArgoCD', type: 'success' },
-  { text: '  [03] Containers & Orchestration Docker, Kubernetes, ECS', type: 'success' },
-  { text: '  [04] Observability             Prometheus, Grafana, ELK', type: 'success' },
-  { text: '  [05] Cloud Platforms           AWS, GCP, Azure', type: 'success' },
+  { text: '  [01] IaC            Terraform, OpenTofu, CloudFormation, Ansible, Chef, Puppet', type: 'success' },
+  { text: '  [02] CI/CD          GitHub Actions, Jenkins, ArgoCD, Azure DevOps, GitLab, Airflow', type: 'success' },
+  { text: '  [03] Containers     Docker, Kubernetes, ECS, Nomad, OpenShift, Helm', type: 'success' },
+  { text: '  [04] Observability  Prometheus, Grafana, Datadog, New Relic, ELK, Loki', type: 'success' },
+  { text: '  [05] Cloud          AWS, GCP, Azure, DigitalOcean, Cloudflare', type: 'success' },
+  { text: '  [06] Databases      PostgreSQL, MySQL, MSSQL, MongoDB, Redis, DynamoDB', type: 'success' },
   { text: '', type: 'output' },
 ];
 
@@ -72,16 +72,6 @@ const EXPERIENCE_OUTPUT = [
   { text: '', type: 'output' },
 ];
 
-const CERTS_OUTPUT = [
-  { text: '', type: 'output' },
-  { text: '  Certifications:', type: 'bold' },
-  { text: '', type: 'output' },
-  { text: '  [x] AWS Solutions Architect — Professional', type: 'success' },
-  { text: '  [x] Certified Kubernetes Administrator (CKA)', type: 'success' },
-  { text: '  [x] HashiCorp Terraform Associate', type: 'success' },
-  { text: '  [x] AWS DevOps Engineer — Professional', type: 'success' },
-  { text: '', type: 'output' },
-];
 
 const PROJECTS_OUTPUT = [
   { text: '', type: 'output' },
@@ -194,11 +184,6 @@ export default function Terminal() {
 
       case 'experience':
         addLines(EXPERIENCE_OUTPUT);
-        break;
-
-      case 'certifications':
-      case 'certs':
-        addLines(CERTS_OUTPUT);
         break;
 
       case 'projects':
