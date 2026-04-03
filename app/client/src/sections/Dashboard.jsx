@@ -252,7 +252,7 @@ export default function Dashboard() {
             <thead>
               <tr>
                 <th>Commit</th>
-                <th>Message</th>
+                <th>Branch</th>
                 <th>Status</th>
                 <th>Time</th>
               </tr>
