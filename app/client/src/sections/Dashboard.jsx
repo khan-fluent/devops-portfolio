@@ -25,9 +25,10 @@ const EMPTY_DEPLOYMENTS = {
 };
 
 function getMetricColor(type, value) {
+  const v = parseFloat(value) || 0;
   if (type === 'cpu' || type === 'memory') {
-    if (value < 60) return 'green';
-    if (value < 85) return 'yellow';
+    if (v < 60) return 'green';
+    if (v < 85) return 'yellow';
     return 'red';
   }
   return 'green';
@@ -44,10 +45,11 @@ function formatUptime(seconds) {
 function normalizeMetrics(raw) {
   if (!raw || raw.cpu_percent === undefined) return null;
   return {
-    cpu: Math.round(raw.cpu_percent),
-    memory: Math.round(raw.memory_percent),
+    cpu: raw.cpu_percent,
+    memory: raw.memory_percent,
     uptime: formatUptime(raw.uptime_seconds),
-    containers: { running: 1, total: 1 },
+    containers: { running: raw.container_count || 1, total: raw.container_count || 1 },
+    source: raw.source || 'unknown',
   };
 }
 
