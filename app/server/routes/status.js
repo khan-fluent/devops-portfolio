@@ -1,8 +1,9 @@
 import { Router } from "express";
-import os from "os";
 import pool from "../db/index.js";
 
 const router = Router();
+
+const ECS_METADATA_URI = process.env.ECS_CONTAINER_METADATA_URI_V4;
 
 async function checkDatabase() {
   const start = Date.now();
@@ -14,17 +15,54 @@ async function checkDatabase() {
   }
 }
 
-function checkMemory() {
+async function checkMemory() {
   const start = Date.now();
-  const totalMem = os.totalmem();
-  const freeMem = os.freemem();
-  const usedPercent = ((totalMem - freeMem) / totalMem) * 100;
-  const threshold = 95;
+
+  // Use real container memory from ECS metadata if available
+  if (ECS_METADATA_URI) {
+    try {
+      const res = await fetch(`${ECS_METADATA_URI}/task/stats`);
+      const stats = await res.json();
+      const containers = Object.values(stats);
+      let totalUsed = 0;
+      let totalLimit = 0;
+      for (const c of containers) {
+        if (c.memory_stats) {
+          totalUsed += c.memory_stats.usage - (c.memory_stats.stats?.cache || 0);
+          totalLimit += c.memory_stats.limit;
+        }
+      }
+      const usedPercent = totalLimit > 0 ? (totalUsed / totalLimit) * 100 : 0;
+      return {
+        name: "memory",
+        status: usedPercent < 90 ? "pass" : "warn",
+        latency_ms: Date.now() - start,
+        detail: {
+          used_percent: Math.round(usedPercent * 100) / 100,
+          used_mb: Math.round(totalUsed / 1024 / 1024),
+          limit_mb: Math.round(totalLimit / 1024 / 1024),
+          threshold: 90,
+          source: "ecs-metadata",
+        },
+      };
+    } catch {
+      // fall through to process-level check
+    }
+  }
+
+  // Fallback: process memory
+  const mem = process.memoryUsage();
+  const usedPercent = (mem.rss / (512 * 1024 * 1024)) * 100; // assume 512MB limit
   return {
     name: "memory",
-    status: usedPercent < threshold ? "pass" : "warn",
+    status: usedPercent < 90 ? "pass" : "warn",
     latency_ms: Date.now() - start,
-    detail: { used_percent: Math.round(usedPercent * 100) / 100, threshold },
+    detail: {
+      used_percent: Math.round(usedPercent * 100) / 100,
+      used_mb: Math.round(mem.rss / 1024 / 1024),
+      threshold: 90,
+      source: "process",
+    },
   };
 }
 
@@ -35,7 +73,7 @@ function checkUptime() {
     name: "uptime",
     status: uptime > 5 ? "pass" : "starting",
     latency_ms: Date.now() - start,
-    detail: { uptime_seconds: Math.round(uptime) },
+    detail: { process_uptime_seconds: Math.round(uptime) },
   };
 }
 
@@ -43,7 +81,7 @@ function checkUptime() {
 router.get("/", async (req, res) => {
   const checks = await Promise.all([
     checkDatabase(),
-    Promise.resolve(checkMemory()),
+    checkMemory(),
     Promise.resolve(checkUptime()),
   ]);
 

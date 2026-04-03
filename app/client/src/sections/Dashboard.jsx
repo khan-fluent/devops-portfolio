@@ -47,7 +47,8 @@ function normalizeMetrics(raw) {
   return {
     cpu: raw.cpu_percent,
     memory: raw.memory_percent,
-    uptime: formatUptime(raw.uptime_seconds),
+    uptime: formatUptime(raw.process_uptime),
+    hostUptime: formatUptime(raw.uptime_seconds),
     containers: { running: raw.container_count || 1, total: raw.container_count || 1 },
     source: raw.source || 'unknown',
   };
