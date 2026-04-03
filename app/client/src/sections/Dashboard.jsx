@@ -6,33 +6,22 @@ import '../styles/Dashboard.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const FALLBACK_METRICS = {
-  cpu: 42,
-  memory: 67,
-  uptime: '14d 7h 32m',
-  containers: { running: 12, total: 12 },
+const EMPTY_METRICS = {
+  cpu: 0,
+  memory: 0,
+  uptime: '--',
+  containers: { running: 0, total: 0 },
 };
 
-const FALLBACK_STATUS = {
-  services: [
-    { name: 'Database', status: 'healthy', latency: 3 },
-    { name: 'API', status: 'healthy', latency: 12 },
-    { name: 'Cache', status: 'healthy', latency: 1 },
-    { name: 'Queue', status: 'healthy', latency: 5 },
-  ],
+const EMPTY_STATUS = {
+  services: [],
 };
 
-const FALLBACK_DEPLOYMENTS = {
-  total: 147,
-  successRate: 98.6,
-  avgDuration: '3m 24s',
-  recent: [
-    { id: 1, commit: 'a1b2c3d', message: 'Update API rate limiter', status: 'success', time: '2 min ago' },
-    { id: 2, commit: 'e4f5g6h', message: 'Add health check endpoint', status: 'success', time: '1 hour ago' },
-    { id: 3, commit: 'i7j8k9l', message: 'Fix memory leak in worker', status: 'success', time: '3 hours ago' },
-    { id: 4, commit: 'm0n1o2p', message: 'Deploy monitoring stack', status: 'failed', time: '5 hours ago' },
-    { id: 5, commit: 'q3r4s5t', message: 'Scale database replicas', status: 'success', time: '8 hours ago' },
-  ],
+const EMPTY_DEPLOYMENTS = {
+  total: 0,
+  successRate: '0.0',
+  avgDuration: '--',
+  recent: [],
 };
 
 function getMetricColor(type, value) {
@@ -53,7 +42,7 @@ function formatUptime(seconds) {
 }
 
 function normalizeMetrics(raw) {
-  if (!raw || !raw.cpu_percent) return null;
+  if (!raw || raw.cpu_percent === undefined) return null;
   return {
     cpu: Math.round(raw.cpu_percent),
     memory: Math.round(raw.memory_percent),
@@ -95,10 +84,9 @@ export default function Dashboard() {
   const { data: deployStatsRaw, refetch: refetchStats } = useApi('/api/deployments/stats');
   const sectionRef = useRef(null);
 
-  const metrics = normalizeMetrics(metricsRaw) || FALLBACK_METRICS;
-  const status = normalizeStatus(statusRaw) || FALLBACK_STATUS;
-  const normalized = normalizeDeployments(deploymentsRaw, deployStatsRaw);
-  const deployments = normalized.total > 0 ? normalized : FALLBACK_DEPLOYMENTS;
+  const metrics = normalizeMetrics(metricsRaw) || EMPTY_METRICS;
+  const status = normalizeStatus(statusRaw) || EMPTY_STATUS;
+  const deployments = normalizeDeployments(deploymentsRaw, deployStatsRaw);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -267,20 +255,28 @@ export default function Dashboard() {
               </tr>
             </thead>
             <tbody>
-              {(deployments.recent || []).map((dep) => (
-                <tr key={dep.id}>
-                  <td>{dep.commit}</td>
-                  <td style={{ fontFamily: 'var(--font-sans)' }}>{dep.message}</td>
-                  <td>
-                    <span
-                      className={`dashboard__status-badge dashboard__status-badge--${dep.status}`}
-                    >
-                      {dep.status}
-                    </span>
+              {(deployments.recent || []).length === 0 ? (
+                <tr>
+                  <td colSpan="4" style={{ textAlign: 'center', color: 'var(--color-text-secondary)', padding: '2rem' }}>
+                    No deployments recorded yet — push to main to trigger CI/CD
                   </td>
-                  <td>{dep.time}</td>
                 </tr>
-              ))}
+              ) : (
+                (deployments.recent || []).map((dep) => (
+                  <tr key={dep.id}>
+                    <td>{dep.commit}</td>
+                    <td style={{ fontFamily: 'var(--font-sans)' }}>{dep.message}</td>
+                    <td>
+                      <span
+                        className={`dashboard__status-badge dashboard__status-badge--${dep.status}`}
+                      >
+                        {dep.status}
+                      </span>
+                    </td>
+                    <td>{dep.time}</td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>

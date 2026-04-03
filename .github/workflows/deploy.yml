@@ -63,10 +63,34 @@ jobs:
           container-name: devops-portfolio
           image: ${{ steps.build-image.outputs.image }}
 
+      - name: Record deploy start time
+        id: timer
+        run: echo "start=$(date +%s%3N)" >> $GITHUB_OUTPUT
+
       - name: Deploy to ECS
+        id: deploy
         uses: aws-actions/amazon-ecs-deploy-task-definition@v2
         with:
           task-definition: ${{ steps.task-def.outputs.task-definition }}
           service: ${{ env.ECS_SERVICE }}
           cluster: ${{ env.ECS_CLUSTER }}
           wait-for-service-stability: true
+
+      - name: Get app public IP
+        id: ip
+        run: |
+          IP=$(aws ec2 describe-instances \
+            --filters "Name=tag:Name,Values=devops-portfolio-ecs-instance" "Name=instance-state-name,Values=running" \
+            --query 'Reservations[0].Instances[0].PublicIpAddress' --output text)
+          echo "ip=$IP" >> $GITHUB_OUTPUT
+
+      - name: Record deployment to API
+        if: always()
+        run: |
+          END=$(date +%s%3N)
+          DURATION=$(( END - ${{ steps.timer.outputs.start }} ))
+          STATUS=${{ steps.deploy.outcome == 'success' && 'success' || 'failure' }}
+          curl -s -X POST "http://${{ steps.ip.outputs.ip }}:3000/api/deployments" \
+            -H "Content-Type: application/json" \
+            -d "{\"commit_sha\": \"${{ github.sha }}\", \"branch\": \"${{ github.ref_name }}\", \"status\": \"$STATUS\", \"duration_ms\": $DURATION}" \
+            || echo "Failed to record deployment (app may still be starting)"
