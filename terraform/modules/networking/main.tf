@@ -14,19 +14,13 @@ data "aws_subnets" "default" {
   }
 }
 
+# ---------- Web / ECS security group ----------
 resource "aws_security_group" "web" {
   name        = "devops-portfolio-web"
   description = "Allow HTTP, HTTPS, and SSH inbound traffic"
   vpc_id      = data.aws_vpc.default.id
 
-  ingress {
-    description = "HTTP"
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
+  # App port — only port exposed to the internet
   ingress {
     description = "App"
     from_port   = 3000
@@ -35,22 +29,11 @@ resource "aws_security_group" "web" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  ingress {
-    description = "HTTPS"
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+  # No SSH — use SSM Session Manager instead
+  # No HTTP/80 — app runs on 3000
+  # No HTTPS/443 — handled at Cloudflare/CDN layer later
 
-  ingress {
-    description = "SSH"
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
+  # Outbound — needed for ECR pulls, Secrets Manager, CloudWatch
   egress {
     description = "All outbound"
     from_port   = 0
@@ -60,11 +43,13 @@ resource "aws_security_group" "web" {
   }
 }
 
+# ---------- RDS security group ----------
 resource "aws_security_group" "rds" {
   name        = "devops-portfolio-rds"
   description = "Allow PostgreSQL from web security group only"
   vpc_id      = data.aws_vpc.default.id
 
+  # Only accept connections from the ECS security group
   ingress {
     description     = "PostgreSQL from web tier"
     from_port       = 5432
