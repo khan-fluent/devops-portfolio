@@ -94,8 +94,8 @@ resource "aws_iam_role" "task" {
   assume_role_policy = data.aws_iam_policy_document.ecs_task_assume.json
 }
 
-resource "aws_iam_role_policy" "task_ses" {
-  name = "${var.cluster_name}-task-ses"
+resource "aws_iam_role_policy" "task_sns" {
+  name = "${var.cluster_name}-task-sns"
   role = aws_iam_role.task.id
 
   policy = jsonencode({
@@ -103,8 +103,8 @@ resource "aws_iam_role_policy" "task_ses" {
     Statement = [
       {
         Effect   = "Allow"
-        Action   = ["ses:SendEmail", "ses:SendRawEmail"]
-        Resource = "*"
+        Action   = ["sns:Publish"]
+        Resource = var.sns_topic_arn
       }
     ]
   })
@@ -200,8 +200,7 @@ resource "aws_ecs_task_definition" "this" {
         { name = "DB_PORT", value = var.db_port },
         { name = "DB_NAME", value = var.db_name },
         { name = "DB_USERNAME", value = var.db_username },
-        { name = "CONTACT_EMAIL", value = var.contact_email },
-        { name = "AWS_SES_REGION", value = "us-east-1" },
+        { name = "SNS_TOPIC_ARN", value = var.sns_topic_arn },
       ]
 
       secrets = [

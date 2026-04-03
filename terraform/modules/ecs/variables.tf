@@ -58,3 +58,8 @@ variable "contact_email" {
   description = "Email address for contact form notifications"
   type        = string
 }
+
+variable "sns_topic_arn" {
+  description = "ARN of the SNS topic for contact form notifications"
+  type        = string
+}

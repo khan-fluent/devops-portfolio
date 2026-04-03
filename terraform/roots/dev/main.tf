@@ -64,6 +64,7 @@ module "ecs" {
   db_secret_arn = module.rds.master_user_secret_arn
 
   contact_email = var.contact_email
+  sns_topic_arn = module.monitoring.sns_topic_arn
 }
 
 module "ses" {

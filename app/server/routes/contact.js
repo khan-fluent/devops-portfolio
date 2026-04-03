@@ -1,44 +1,40 @@
 import { Router } from "express";
-import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
+import { SNSClient, PublishCommand } from "@aws-sdk/client-sns";
 import { query } from "../db/index.js";
 
 const router = Router();
 
-const CONTACT_EMAIL = process.env.CONTACT_EMAIL;
-const ses = new SESClient({ region: process.env.AWS_SES_REGION || "us-east-1" });
+const SNS_TOPIC_ARN = process.env.SNS_TOPIC_ARN;
+const sns = new SNSClient({ region: process.env.AWS_SES_REGION || "us-east-1" });
 
-async function sendNotificationEmail(name, email, message) {
-  if (!CONTACT_EMAIL) return;
+async function sendNotification(name, email, message) {
+  if (!SNS_TOPIC_ARN) {
+    console.warn("SNS_TOPIC_ARN not set — skipping notification");
+    return;
+  }
 
-  const command = new SendEmailCommand({
-    Source: CONTACT_EMAIL,
-    Destination: { ToAddresses: [CONTACT_EMAIL] },
-    Message: {
-      Subject: { Data: `Portfolio Contact: ${name}` },
-      Body: {
-        Text: {
-          Data: [
-            `New contact form submission`,
-            ``,
-            `Name:    ${name}`,
-            `Email:   ${email}`,
-            ``,
-            `Message:`,
-            message,
-            ``,
-            `---`,
-            `Sent from your DevOps Portfolio`,
-          ].join("\n"),
-        },
-      },
-    },
+  const command = new PublishCommand({
+    TopicArn: SNS_TOPIC_ARN,
+    Subject: `Portfolio Contact: ${name}`,
+    Message: [
+      `New contact form submission`,
+      ``,
+      `Name:    ${name}`,
+      `Email:   ${email}`,
+      ``,
+      `Message:`,
+      message,
+      ``,
+      `---`,
+      `Sent from khanfluent.digital`,
+    ].join("\n"),
   });
 
   try {
-    await ses.send(command);
-    console.log(`Contact notification sent to ${CONTACT_EMAIL}`);
+    await sns.send(command);
+    console.log("Contact notification sent via SNS");
   } catch (err) {
-    console.error("SES send failed:", err.message);
+    console.error("SNS publish failed:", err.message);
   }
 }
 
@@ -74,8 +70,8 @@ router.post("/", async (req, res) => {
       [name.trim(), email.trim().toLowerCase(), message.trim()]
     );
 
-    // Send email notification (async, don't block response)
-    sendNotificationEmail(name.trim(), email.trim(), message.trim());
+    // Send notification (async, don't block response)
+    sendNotification(name.trim(), email.trim(), message.trim());
 
     res.status(201).json({ success: true, data: result.rows[0] });
   } catch (err) {
